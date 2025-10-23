@@ -46,6 +46,8 @@ list_of_files = [
 
     "demo.py",
 
+    #Utiliser pour les inclures automatiquement les packages local on aura 
+    # -e . dans le requirement file.
     "setup.py",
 
 
