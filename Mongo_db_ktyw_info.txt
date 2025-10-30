@@ -1,0 +1,7 @@
+Connection information for MongoDB : 
+
+- Username : ktyw, PassWord : ktyw
+
+- python -m pip install "pymongo[srv]"
+
+- mongodb+srv://ktyw:ktyw@cluster0.njin8fk.mongodb.net/?appName=Cluster0
