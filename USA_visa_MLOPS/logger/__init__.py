@@ -1,28 +1,27 @@
-import logging               # Module standard pour la journalisation (logs)
-import os                    # Outils pour manipuler le système de fichiers (chemins, dossiers)
+import logging
+import os
 
-from from_root import from_root   # Fonction tierce : renvoie le chemin "racine" du projet
-from datetime import datetime     # Pour dater/horodater le fichier de log
+from from_root import from_root
+from datetime import datetime
+from pathlib import Path
 
-# Nom du fichier de log avec horodatage à la seconde (ex: 10_30_2025_14_22_05.log)
-LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
 
-# Nom du dossier qui contiendra les fichiers de log
-log_dir = 'logs'
+# Calcule la racine du projet (On remonte à la racine du projet niveau -2)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-# Chemin ABSOLU du fichier de log : <racine_projet>/logs/<fichier_log>
-logs_path = os.path.join(from_root(), log_dir, LOG_FILE)
+# Crée un dossier logs/ à la racine du projet s'il n'existe pas déjà il est créer
+LOG_DIR = PROJECT_ROOT / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-# Crée un dossier "logs" dans le répertoire COURANT si absent
-# ⚠️ Attention : ce n'est pas forcément le même "logs" que celui de logs_path
-os.makedirs(log_dir, exist_ok=True)
+# Génère un nom de fichier de log horodaté
+LOG_FILE = LOG_DIR / f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
 
-# Configuration globale du logging :
-# - filename=logs_path : écrit les logs dans le fichier défini ci-dessus
-# - format=... : format des lignes de log (date, logger, niveau, message)
-# - level=logging.DEBUG : inclut tous les messages de DEBUG à CRITICAL
+# Configure logging with both file and stdout handlers (Avec un niveau DEBUG c'est à dire tout type d'erreur sera loggé)
 logging.basicConfig(
-    filename=logs_path,
     format="[ %(asctime)s ] %(name)s - %(levelname)s - %(message)s",
-    level=logging.DEBUG,
+    level=logging.DEBUG,  # journalise tout, de DEBUG à CRITICAL
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler(sys.stdout),
+    ],
 )
